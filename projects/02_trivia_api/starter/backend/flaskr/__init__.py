@@ -1,18 +1,37 @@
+import json
 import os
+import re
+from traceback import print_tb
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+import sys
+
+from sqlalchemy import except_all
 
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+def paginate_questions(request, selection):
+  page = request.args.get("page", 1, type=int)
+  start = (page - 1) * QUESTIONS_PER_PAGE
+  end = start + QUESTIONS_PER_PAGE
+  
+  questions = [question.format() for question in selection]
+  current_questions = questions[start:end]
+
+  return current_questions
+
+
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
   setup_db(app)
-  
+  CORS(app)
+  CORS(app, resources={r"*": {"origins": "*"}})
+
   '''
   @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
@@ -20,13 +39,31 @@ def create_app(test_config=None):
   '''
   @TODO: Use the after_request decorator to set Access-Control-Allow
   '''
-
+# CORS Headers
+  @app.after_request
+  def after_request(response):
+      response.headers.add(
+          "Access-Control-Allow-Headers", "Content-Type,Authorization,true"
+      )
+      response.headers.add(
+          "Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS"
+      )
+      return response
   '''
   @TODO: 
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
-
+  @app.route("/categories")
+  def get_categories():
+      categories = [category.format() for category in Category.query.all()]
+      
+      return jsonify(
+        {
+        "success": True,
+        "categories": categories
+        }
+      )
 
   '''
   @TODO: 
@@ -40,6 +77,18 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+  @app.route("/questions")
+  def get_questions():
+      selection = Question.query.order_by(Question.id).all()
+      current_questions = paginate_questions(request, selection)
+      return jsonify({
+        "success": True,
+        "questions": current_questions,
+        "total_questions": len(Question.query.all()),
+        "categories": [category.format() for category in Category.query.all()],
+        "current_category": None})
+      
+ 
 
   '''
   @TODO: 
