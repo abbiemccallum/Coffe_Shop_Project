@@ -384,7 +384,6 @@ The API will return three error types when requests fail:
 
 ```
 
-
 #### POST /questions/search 
 - Sends a post request in order to search for a specific question by search term 
 - Returns: any array of questions, a number of totalQuestions that met the search term and the current category string 
