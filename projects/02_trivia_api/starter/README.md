@@ -118,7 +118,7 @@ The API will return three error types when requests fail:
 ### Endpoints
 
 
-#### GET /categories 
+#### GET /categories  
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs. 
 - Sample: curl http://127.0.0.1:5000/categories
@@ -136,9 +136,7 @@ The API will return three error types when requests fail:
 }
 ```
 
-
-
-#### GET /questions 
+#### GET /questions
 - Fetches a paginated set of questions, a total number of questions, all categories and current category string. 
 - Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
 - Sample: curl http://127.0.0.1:5000/questions
@@ -227,6 +225,7 @@ The API will return three error types when requests fail:
   ], 
   "success": true, 
   "total_questions": 28
+}
 ```
 
 
@@ -273,7 +272,7 @@ The API will return three error types when requests fail:
 ```
 
 
-#### DELETE /questions/int:question_id
+#### DELETE /questions/int:question_id
 - Deletes a specified question using the id of the question
 - curl -X DELETE http://127.0.0.1:5000/questions/4
 ```js
@@ -282,7 +281,7 @@ The API will return three error types when requests fail:
 }
 ```
 
-#### POST /quizzes 
+#### POST /quizzes
 - Sends a post request in order to get the next question 
 - Returns: a single new question object 
 - curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [1, 4, 20, 15], "quiz_category": {"type": "Science", "id": "1"}}' http://127.0.0.1:5000/quizzes
@@ -300,7 +299,7 @@ The API will return three error types when requests fail:
 ```
 
 
-#### POST /questions 
+#### POST /questions
 - Sends a post request in order to add a new question
 - curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"What does NBA stand for?", "answer":"National Basketball Association", "category":"6", "difficulty":"2"}'
 
@@ -386,7 +385,7 @@ The API will return three error types when requests fail:
 ```
 
 
-#### POST /questions/search 
+#### POST /questions/search 
 - Sends a post request in order to search for a specific question by search term 
 - Returns: any array of questions, a number of totalQuestions that met the search term and the current category string 
 - curl http://127.0.0.1:5000/questions/search -X POST -H "Content-Type: application/json" -d '{"searchTerm": "which"}'
