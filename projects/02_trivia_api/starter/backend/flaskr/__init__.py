@@ -1,15 +1,8 @@
-import json
 import os
-import re
-from sre_constants import SUCCESS
-from traceback import print_tb
-from unicodedata import category
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
-
-from sqlalchemy import except_all
 
 from models import setup_db, Question, Category
 
@@ -111,6 +104,7 @@ def create_app(test_config=None):
 
   @app.route("/questions/<int:question_id>", methods=["DELETE"])
   def delete_questions(question_id):
+      #delete question using question id
       try: 
         question = Question.query.filter(Question.id == question_id).one_or_none()
 

@@ -25,6 +25,8 @@ class TriviaTestCase(unittest.TestCase):
             # create all tables
             self.db.create_all()
         
+        #setting up test data
+        
         self.new_question = {
         "question": 'What is the capital of Scotland?',
         "answer": 'Edinburgh',
@@ -77,7 +79,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data["total_questions"])
         self.assertTrue(len(data["categories"]))
         
-    #test for error when getting questions beyond valid page no.
+    #test for error when getting questions beyond valid page number
     def test_404_sent_requesting_beyond_valid_page(self):
         res = self.client().get("/questions?page=1000", json={"difficulty": 1})
         data = json.loads(res.data)
@@ -116,8 +118,8 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
+        
 
-        pass
     #testing error when creating new question fails
     def test_422_if_question_creation_fails(self):
         res = self.client().post("/questions", json=self.error_question)
@@ -126,8 +128,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data["success"], False)
         self.assertEqual(data["message"], "unprocessable")
-        pass
-    
+        
     #test to search questions by search term
     def test_search_questions(self):
         res = self.client().post("/questions/search", json={"searchTerm": "title"})
