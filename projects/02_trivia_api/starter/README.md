@@ -97,8 +97,6 @@ Base URL: At present this app is hosted locally.
 The backend app is hosted at http://127.0.0.1:5000/ 
 The frontend base URL is http://127.0.0.1:3000/
 
-Authentication: This version of the application does not require authentication or API keys.
-
 ### Error Handling
 
 Errors are returned as JSON objects in the following format:
@@ -119,100 +117,196 @@ The API will return three error types when requests fail:
 
 ### Endpoints
 
-```js
-GET '/categories'
+
+#### GET /categories
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs. 
 - Sample: curl http://127.0.0.1:5000/categories
+```js
 {
-    'categories': { '1' : "Science",
-    '2' : "Art",
-    '3' : "Geography",
-    '4' : "History",
-    '5' : "Entertainment",
-    '6' : "Sports" }
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "success": true
 }
 ```
 
 
 
-GET '/questions'
+#### GET /questions
 - Fetches a paginated set of questions, a total number of questions, all categories and current category string. 
 - Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
 - Sample: curl http://127.0.0.1:5000/questions
 ```js
 {
-    'questions': [
-        {
-            'id': 1,
-            'question': 'This is a question',
-            'answer': 'This is an answer', 
-            'difficulty': 5,
-            'category': 2
-        },
-    ],
-    'totalQuestions': 100,
-    'categories': { '1' : "Science",
-    '2' : "Art",
-    '3' : "Geography",
-    '4' : "History",
-    '5' : "Entertainment",
-    '6' : "Sports" },
-    'currentCategory': 'History'
-}
+  "categories": {
+    "1": "Science", 
+    "2": "Art", 
+    "3": "Geography", 
+    "4": "History", 
+    "5": "Entertainment", 
+    "6": "Sports"
+  }, 
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "Maya Angelou", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 5, 
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    }, 
+    {
+      "answer": "Apollo 13", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 2, 
+      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
+    }, 
+    {
+      "answer": "Tom Cruise", 
+      "category": 5, 
+      "difficulty": 4, 
+      "id": 4, 
+      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
+    }, 
+    {
+      "answer": "Edward Scissorhands", 
+      "category": 5, 
+      "difficulty": 3, 
+      "id": 6, 
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }, 
+    {
+      "answer": "Brazil", 
+      "category": 6, 
+      "difficulty": 3, 
+      "id": 10, 
+      "question": "Which is the only team to play in every soccer World Cup tournament?"
+    }, 
+    {
+      "answer": "Uruguay", 
+      "category": 6, 
+      "difficulty": 4, 
+      "id": 11, 
+      "question": "Which country won the first ever soccer World Cup in 1930?"
+    }, 
+    {
+      "answer": "George Washington Carver", 
+      "category": 4, 
+      "difficulty": 2, 
+      "id": 12, 
+      "question": "Who invented Peanut Butter?"
+    }, 
+    {
+      "answer": "Lake Victoria", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 13, 
+      "question": "What is the largest lake in Africa?"
+    }, 
+    {
+      "answer": "The Palace of Versailles", 
+      "category": 3, 
+      "difficulty": 3, 
+      "id": 14, 
+      "question": "In which royal palace would you find the Hall of Mirrors?"
+    }, 
+    {
+      "answer": "Agra", 
+      "category": 3, 
+      "difficulty": 2, 
+      "id": 15, 
+      "question": "The Taj Mahal is located in which Indian city?"
+    }
+  ], 
+  "success": true, 
+  "total_questions": 28
+
 ```
 
-```js
-GET '/categories/<int:id>/questions'
+
+#### GET /categories/<int:id>/questions
 - Fetches questions for a cateogry specified by id request argument 
 - Returns: An object with questions for the specified category, total questions, and current category string 
-- curl http://127.0.0.1:5000/categories/1/questions
-{
-    'questions': [
-        {
-            'id': 1,
-            'question': 'This is a question',
-            'answer': 'This is an answer', 
-            'difficulty': 5,
-            'category': 4
-        },
-    ],
-    'totalQuestions': 100,
-    'currentCategory': 'History'
-}
-```
-
+- curl http://127.0.0.1:5000/categories/2/questions
 ```js
-DELETE '/questions/<int:question_id>'
-- Deletes a specified question using the id of the question
--curl -X DELETE http://127.0.0.1:5000/questions/4
-```
 {
-    "success": "True",
-    "deleted":
-}
-```js
-POST '/quizzes'
-- Sends a post request in order to get the next question 
-- Request Body: 
-{'previous_questions':  an array of question id's such as [1, 4, 20, 15]
-'quiz_category': a string of the current category }
-- Returns: a single new question object 
-{
-    'question': {
-        'id': 1,
-        'question': 'This is a question',
-        'answer': 'This is an answer', 
-        'difficulty': 5,
-        'category': 4
+  "current_category": null, 
+  "questions": [
+    {
+      "answer": "The Liver", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 20, 
+      "question": "What is the heaviest organ in the human body?"
+    }, 
+    {
+      "answer": "Alexander Fleming", 
+      "category": 1, 
+      "difficulty": 3, 
+      "id": 21, 
+      "question": "Who discovered penicillin?"
+    }, 
+    {
+      "answer": "Blood", 
+      "category": 1, 
+      "difficulty": 4, 
+      "id": 22, 
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    }, 
+    {
+      "answer": "206", 
+      "category": 1, 
+      "difficulty": 5, 
+      "id": 39, 
+      "question": "How many bones are in the human body?"
     }
+  ], 
+  "success": true, 
+  "total_questions": 4
 }
 ```
 
+
+#### DELETE /questions/<int:question_id>
+- Deletes a specified question using the id of the question
+- curl -X DELETE http://127.0.0.1:5000/questions/4
 ```js
-POST '/questions'
+{
+  "success": true
+}
+```
+
+#### POST /quizzes
+- Sends a post request in order to get the next question 
+- Returns: a single new question object 
+- curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [1, 4, 20, 15], "quiz_category": {"type": "Science", "id": "1"}}' http://127.0.0.1:5000/quizzes
+```js
+{
+  "question": {
+    "answer": "Alexander Fleming", 
+    "category": 1, 
+    "difficulty": 3, 
+    "id": 21, 
+    "question": "Who discovered penicillin?"
+  }, 
+  "success": true
+}
+```
+
+
+#### POST /questions
 - Sends a post request in order to add a new question
-- Request Body: 
+- curl http://localhost:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"What does NBA stand for?", "answer":"Nationalll Basketball Association", "category":"6", "difficulty":"2"}'
+
+
+```js
 {
     'question':  'Heres a new question string',
     'answer':  'Heres a new answer string',
@@ -222,14 +316,12 @@ POST '/questions'
 - Returns: Does not return any new data
 ```
 
-```js
-POST '/questions'
+
+#### POST /questions
 - Sends a post request in order to search for a specific question by search term 
-- Request Body: 
-{
-    'searchTerm': 'this is the term the user is looking for'
-}
 - Returns: any array of questions, a number of totalQuestions that met the search term and the current category string 
+- curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"searchTerm": "which"}'
+```js
 {
     'questions': [
         {
@@ -244,6 +336,10 @@ POST '/questions'
     'currentCategory': 'Entertainment'
 }
 ```
+
+### Authors 
+
+### Acknowledgements
 
 
 ## Starting and Submitting the Project
