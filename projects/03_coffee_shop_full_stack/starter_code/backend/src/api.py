@@ -1,3 +1,4 @@
+from crypt import methods
 import os
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
@@ -17,7 +18,7 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 !! Running this function will add one
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -28,7 +29,17 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+@app.route("/drinks")
+def get_drinks():
+    drinks = Drink.query.all()  
+    drink_list_short = [drink.short() for drink in drinks]  
 
+    return jsonify(
+        {
+            "success":True,
+            "drinks": drink_list_short
+        }
+    )
 
 '''
 @TODO implement endpoint
@@ -39,6 +50,16 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route("/drinks-detail")
+def get_drinks_detail():
+    drinks = Drink.query.all()
+    drink_list_long = [drink.long() for drink in drinks]
+
+
+    return jsonify({
+        "success": True,
+        "drinks-detail": drink_list_long
+    })
 
 '''
 @TODO implement endpoint
@@ -50,6 +71,33 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
+@app.route("/drinks", methods=["POST"])
+def create_drinks():
+    # retrieve input from form
+    body = request.get_json()
+
+    new_title = body.get("title")
+    new_id = body.get("id")    
+    new_recipe = body.get(recipe='[{"name", "color", "parts"]')
+    
+    try:
+
+      if None in (new_title, new_id, new_recipe):
+       abort(422)
+      #insert new data
+      else:
+        drink = Drink(title=new_title, id=new_id, 
+        recipe=new_recipe)
+        drink.insert()
+
+        return jsonify({
+            "success": True,
+            "drinks": drink
+        })
+
+    except Exception as e:
+        print('Exception is >> ',e )
+        abort(422)
 
 '''
 @TODO implement endpoint

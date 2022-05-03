@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@angular/cli": "13.3.4",
+    "node-sass": "^7.0.1"
+  }
+}
