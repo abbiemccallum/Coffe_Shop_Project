@@ -52,7 +52,8 @@ def get_drinks():
 '''
 
 @app.route("/drinks-detail")
-def get_drinks_detail():
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(payload):
     drinks = Drink.query.all()
     drink_list_long = [drink.long() for drink in drinks]
 
@@ -74,7 +75,7 @@ def get_drinks_detail():
 
 @app.route("/drinks", methods=["POST"])
 @requires_auth('post:drinks')
-def create_drinks(jwt):
+def create_drinks(payload):
     # retrieve input from form
     body = request.get_json()
 
@@ -113,7 +114,7 @@ def create_drinks(jwt):
 '''
 @app.route("/drinks/<int:id>", methods=["PATCH"])
 @requires_auth('patch:drinks')
-def update_drinks(jwt, id):
+def update_drinks(payload, id):
     # retrieve input from form
     body = request.get_json()
     
@@ -130,7 +131,7 @@ def update_drinks(jwt, id):
       #insert new data
       else:
         drink.title = body.get("title")  
-        drink.recipe = body.get("recipe")
+        drink.recipe = json.dumps(body.get("recipe"))
         # drink = Drink(title=title, recipe=json.dumps(recipe))
         drink.update()
 
@@ -156,7 +157,7 @@ def update_drinks(jwt, id):
 '''
 @app.route("/drinks/<int:id>", methods=["DELETE"])
 @requires_auth('delete:drinks')
-def delete_drinks(jwt, id):
+def delete_drinks(payload, id):
 
     # if drink exists delete
         try: 
