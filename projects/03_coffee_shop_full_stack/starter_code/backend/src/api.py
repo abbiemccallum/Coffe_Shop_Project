@@ -34,11 +34,12 @@ def get_drinks():
     drinks = Drink.query.all()  
     drink_list_short = [drink.short() for drink in drinks]  
 
+# return short list of drinks
     return jsonify(
         {
             "success":True,
             "drinks": drink_list_short
-        }
+        } , 200 
     )
 
 '''
@@ -55,11 +56,11 @@ def get_drinks_detail():
     drinks = Drink.query.all()
     drink_list_long = [drink.long() for drink in drinks]
 
-
+# return long list of drinks
     return jsonify({
         "success": True,
         "drinks-detail": drink_list_long
-    })
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -72,28 +73,28 @@ def get_drinks_detail():
 '''
 
 @app.route("/drinks", methods=["POST"])
-def create_drinks():
+@requires_auth('post:drinks')
+def create_drinks(jwt):
     # retrieve input from form
     body = request.get_json()
 
-    new_title = body.get("title")
-    new_id = body.get("id")    
-    new_recipe = body.get(recipe='[{"name", "color", "parts"]')
-    
+    new_title = body.get("title")    
+    new_recipe = body.get("recipe")
+
+# if new title and recipe insert data  
     try:
 
-      if None in (new_title, new_id, new_recipe):
+      if new_title is None or new_recipe is None:
        abort(422)
       #insert new data
       else:
-        drink = Drink(title=new_title, id=new_id, 
-        recipe=new_recipe)
+        drink = Drink(title=new_title, recipe=json.dumps(new_recipe))
         drink.insert()
 
         return jsonify({
             "success": True,
-            "drinks": drink
-        })
+            "drinks": [drink.long()]
+        }), 200
 
     except Exception as e:
         print('Exception is >> ',e )
@@ -110,6 +111,37 @@ def create_drinks():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+@app.route("/drinks/<int:id>", methods=["PATCH"])
+@requires_auth('patch:drinks')
+def update_drinks(jwt, id):
+    # retrieve input from form
+    body = request.get_json()
+    
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+    # title = body.get("title")    
+    # recipe = body.get("recipe")
+
+    # if title and recipe exist update 
+    try:
+
+      if drink is None:
+       abort(422)
+      #insert new data
+      else:
+        drink.title = body.get("title")  
+        drink.recipe = body.get("recipe")
+        # drink = Drink(title=title, recipe=json.dumps(recipe))
+        drink.update()
+
+        return jsonify({
+            "success": True,
+            "drinks": [drink.long()]
+        }), 200
+
+    except Exception as e:
+        print('Exception is >> ',e )
+        abort(422)
 
 
 '''
@@ -122,7 +154,26 @@ def create_drinks():
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+@app.route("/drinks/<int:id>", methods=["DELETE"])
+@requires_auth('delete:drinks')
+def delete_drinks(jwt, id):
 
+    # if drink exists delete
+        try: 
+            drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+            if drink is None:
+                abort(404)
+
+            drink.delete()
+
+            return jsonify({
+                "success": True,
+                "delete": drink.id
+                }), 200
+        except Exception as e:
+            print('Exception is >> ',e )
+            abort(422)
 
 # Error Handling
 '''
@@ -154,12 +205,33 @@ def unprocessable(error):
 @TODO implement error handler for 404
     error handler should conform to general task above
 '''
+@app.errorhandler(404)
+def not_found(error):
+    return (
+        jsonify({
+            "success": False, 
+            "error": 404, 
+            "message": "resource not found"
+        }), 404
+    )
 
-
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({
+        "success": False, 
+        "error": 400, 
+        "message": "bad request"}) , 400
 '''
 @TODO implement error handler for AuthError
     error handler should conform to general task above
 '''
+@app.errorhandler(AuthError)
+def auth_error(error):
+    return jsonify({
+        "success": False, 
+        "error": auth_error.status_code,
+        "message": auth_error.error
+    }) , error.status_code
 
 if __name__ == "__main__":
     app.debug = True
