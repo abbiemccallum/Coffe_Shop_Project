@@ -60,7 +60,7 @@ def get_drinks_detail(payload):
 # return long list of drinks
     return jsonify({
         "success": True,
-        "drinks-detail": drink_list_long
+        "drinks": drink_list_long
     }), 200
 
 '''
