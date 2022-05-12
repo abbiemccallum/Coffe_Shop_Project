@@ -39,8 +39,8 @@ def get_drinks():
         {
             "success":True,
             "drinks": drink_list_short
-        } , 200 
-    )
+        }) , 200 
+
 
 '''
 @TODO implement endpoint
@@ -226,13 +226,14 @@ def bad_request(error):
 @TODO implement error handler for AuthError
     error handler should conform to general task above
 '''
+
 @app.errorhandler(AuthError)
 def auth_error(error):
     return jsonify({
-        "success": False, 
-        "error": auth_error.status_code,
-        "message": auth_error.error
-    }) , error.status_code
+        "success": False,
+        "error": error.status_code,
+        "message": error.error['description']
+    }), error.status_code
 
 if __name__ == "__main__":
     app.debug = True
